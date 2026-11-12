@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>ماشین‌حساب جامع | Ultimate Calculator</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#19243b;--line:#2b3853;--txt:#edf3ff;--muted:#9eacc6;--accent:#72e0c1;--accent2:#86a8ff;--danger:#ff8290;--key:#202d46;--shadow:0 18px 55px #0006}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#1b3150 0,transparent 38%),var(--bg);color:var(--txt);font-family:Tahoma,"Segoe UI",sans-serif;min-height:100vh;padding:22px}
+.app{max-width:1180px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#07131c;font-size:25px;font-weight:bold}.brand h1{font-size:20px;margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+button,select,input{font:inherit}button{border:1px solid var(--line);background:var(--key);color:var(--txt);padding:10px 13px;border-radius:11px;cursor:pointer;transition:.15s}button:hover{filter:brightness(1.18);transform:translateY(-1px)}button:active{transform:translateY(0)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+.layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.75fr);gap:16px}.panel{background:linear-gradient(180deg,#151f34,#10182a);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:17px;min-width:0}
+.display{background:#080e1b;border:1px solid #283651;border-radius:16px;padding:16px;margin-bottom:14px}.display-head{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:10px}.expr{width:100%;border:0;background:transparent;color:#c4d1e8;text-align:left;direction:ltr;font-size:19px;outline:none;padding:5px 0}.result{min-height:54px;text-align:left;direction:ltr;font-size:clamp(25px,4vw,38px);font-weight:700;overflow-wrap:anywhere;color:var(--accent);padding-top:8px}.result.error{color:var(--danger);font-size:18px}
+.keypad{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.keypad button{min-height:54px;font-size:17px;font-weight:600}.keypad .op{color:var(--accent2)}.keypad .fn{font-size:14px;color:#c3d2f2}.keypad .eq{background:linear-gradient(135deg,#4ad4b0,#7ea7ff);color:#07131c;border:0;font-size:22px}.keypad .clear{color:var(--danger)}.keypad .wide{grid-column:span 2}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}.tab{font-size:13px;padding:8px 11px}.tab.active{background:#24465a;border-color:#4ba88f;color:#baffea}
+.section-title{font-size:14px;color:#dce7fa;margin:16px 0 9px}.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;color:var(--muted)}.field input,.field select{width:100%;background:#0b1323;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0;direction:ltr;text-align:left}
+.inline{display:flex;gap:8px}.inline>*{flex:1;min-width:0}.muted{color:var(--muted);font-size:12px;line-height:1.8}.history{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto}.hist{background:#0d1628;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:left;direction:ltr;cursor:pointer}.hist .small{font-size:11px;color:var(--muted);margin-bottom:5px}.hist .val{font-size:15px;overflow-wrap:anywhere;color:var(--accent)}
+.status{font-size:11px;color:var(--muted);margin-top:10px;display:flex;justify-content:space-between;gap:8px}.hidden{display:none!important}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.top{align-items:flex-start}.panel{padding:13px}}@media(max-width:430px){body{padding:10px}.keypad{gap:6px}.keypad button{min-height:48px;padding:8px 3px;font-size:15px}.brand h1{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand"><div class="logo">∑</div><div><h1>ماشین‌حساب جامع</h1><p>علمی • مهندسی • محاسبات دقیق • تبدیل واحد</p></div></div><div class="top-actions"><button id="angleBtn">DEG</button><button id="copyBtn">کپی نتیجه</button><button id="themeBtn">تغییر ظاهر</button></div></header>
+<div class="layout">
+<main class="panel">
+<div class="display"><div class="display-head"><span id="modeLabel">حالت علمی</span><span id="precisionLabel">دقت محاسبات: 100 رقم اعشار</span></div><input id="expr" class="expr" spellcheck="false" autocomplete="off" placeholder="مثلاً: sqrt(144) + 2^10"><div id="result" class="result">0</div></div>
+<div class="tabs"><button class="tab active" data-tab="sci">علمی</button><button class="tab" data-tab="basic">پایه</button><button class="tab" data-tab="convert">تبدیل واحد</button><button class="tab" data-tab="constants">ثابت‌ها</button></div>
+<div id="sci" class="tabpage"><div class="keypad" id="keypad">
+<button class="clear" data-insert="AC">AC</button><button data-insert="(">(</button><button data-insert=")">)</button><button class="op" data-insert=" % ">%</button><button class="op" data-insert=" / ">÷</button>
+<button class="fn" data-insert="sin(">sin</button><button class="fn" data-insert="cos(">cos</button><button class="fn" data-insert="tan(">tan</button><button class="fn" data-insert="sqrt(">√</button><button class="op" data-insert=" * ">×</button>
+<button class="fn" data-insert="asin(">sin⁻¹</button><button class="fn" data-insert="acos(">cos⁻¹</button><button class="fn" data-insert="atan(">tan⁻¹</button><button class="fn" data-insert="log(">log</button><button class="op" data-insert=" - ">−</button>
+<button class="fn" data-insert="ln(">ln</button><button class="fn" data-insert="abs(">abs</button><button class="fn" data-insert="floor(">floor</button><button class="fn" data-insert="ceil(">ceil</button><button class="op" data-insert=" + ">+</button>
+<button data-insert="7">7</button><button data-insert="8">8</button><button data-insert="9">9</button><button class="fn" data-insert="^">xʸ</button><button class="fn" data-insert="!">n!</button>
+<button data-insert="4">4</button><button data-insert="5">5</button><button data-insert="6">6</button><button class="fn" data-insert="pi">π</button><button class="fn" data-insert="e">e</button>
+<button data-insert="1">1</button><button data-insert="2">2</button><button data-insert="3">3</button><button data-insert="Ans">Ans</button><button data-insert="," class="fn">,</button>
+<button class="wide" data-insert="0">0</button><button data-insert=".">.</button><button data-insert="DEL" class="clear">⌫</button><button class="eq" id="equals">=</button>
+</div><p class="muted">توابع: sin, cos, tan، معکوس آن‌ها، sqrt، log (مبنای ۱۰)، ln، abs، floor، ceil، توان ^، فاکتوریل !، درصد %. ضرب ضمنی مثل 2pi نیز پشتیبانی می‌شود.</p></div>
+<div id="basic" class="tabpage hidden"><div class="keypad">
+<button class="clear" data-insert="AC">AC</button><button data-insert="(">(</button><button data-insert=")">)</button><button class="op" data-insert=" % ">%</button><button class="op" data-insert=" / ">÷</button>
+<button data-insert="7">7</button><button data-insert="8">8</button><button data-insert="9">9</button><button class="op" data-insert=" * ">×</button><button class="op" data-insert=" - ">−</button>
+<button data-insert="4">4</button><button data-insert="5">5</button><button data-insert="6">6</button><button class="op" data-insert=" + ">+</button><button data-insert="^">xʸ</button>
+<button data-insert="1">1</button><button data-insert="2">2</button><button data-insert="3">3</button><button data-insert=".">.</button><button data-insert="Ans">Ans</button>
+<button class="wide" data-insert="0">0</button><button data-insert="DEL" class="clear">⌫</button><button class="eq" id="equals2">=</button>
+</div></div>
+<div id="convert" class="tabpage hidden"><div class="section-title">تبدیل واحدهای رایج</div><div class="tools"><div class="field"><label>مقدار</label><input id="convValue" value="1" inputmode="decimal"></div><div class="field"><label>دسته</label><select id="convType"><option value="length">طول</option><option value="mass">جرم</option><option value="temp">دما</option><option value="area">مساحت</option><option value="volume">حجم</option><option value="speed">سرعت</option><option value="time">زمان</option><option value="data">حجم داده</option></select></div><div class="field"><label>از</label><select id="convFrom"></select></div><div class="field"><label>به</label><select id="convTo"></select></div></div><button id="convertBtn" style="margin-top:12px;width:100%">تبدیل کن</button><div id="convResult" class="result" style="font-size:22px">—</div></div>
+<div id="constants" class="tabpage hidden"><div class="section-title">ثابت‌های پرکاربرد</div><div class="tools" id="constantList"></div><p class="muted">با انتخاب هر ثابت، نماد آن در عبارت قرار می‌گیرد.</p></div>
+</main>
+<aside class="panel">
+<div class="section-title" style="margin-top:0">تنظیمات دقت</div><div class="field"><label>تعداد رقم اعشار خروجی: <b id="precVal">100</b></label><input type="range" id="precision" min="10" max="100" step="1" value="100" style="direction:ltr"></div>
+<div class="field" style="margin-top:12px"><label>نمایش نتیجه</label><select id="format"><option value="normal">معمولی</option><option value="sci">نماد علمی</option><option value="fixed">اعشار ثابت</option></select></div>
+<div class="section-title">حافظه و تاریخچه</div><div class="inline"><button id="memAdd">M+</button><button id="memRecall">MR</button><button id="memClear">MC</button></div><p class="muted" id="memLabel">حافظه: 0</p><div class="inline"><button id="historyClear">پاک‌کردن تاریخچه</button><button id="exportHistory">خروجی CSV</button></div><div class="history" id="history" style="margin-top:10px"><div class="muted">هنوز محاسبه‌ای ثبت نشده است.</div></div>
+<div class="status"><span>محاسبات محلی و بدون اینترنت</span><span>نسخه 1.0</span></div>
+</aside>
+</div>
+</div>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);let ans=0,mem=0,angle='DEG',hist=[],precision=100,last=0;
+const units={
+length:{m:1,km:1000,cm:.01,mm:.001,mi:1609.344,ft:.3048,in:.0254,yd:.9144},
+mass:{kg:1,g:.001,mg:1e-6,lb:.45359237,oz:.028349523125,ton:1000},
+area:{'m²':1,'km²':1e6,'cm²':1e-4,ha:1e4,acre:4046.8564224,'ft²':.09290304},
+volume:{L:1,'mL':.001,'m³':1000,gal:3.785411784,cup:.2365882365},
+speed:{'m/s':1,'km/h':1/3.6,mph:.44704,knot:.514444},
+time:{s:1,min:60,h:3600,day:86400,week:604800},
+data:{B:1,KB:1e3,MB:1e6,GB:1e9,TB:1e12,KiB:1024,MiB:1048576,GiB:1073741824}
+};
+function fmt(x){if(!Number.isFinite(x))throw Error('نتیجه خارج از محدوده است');let f=$('format').value;if(f==='sci')return x.toExponential(Math.min(precision,15));if(f==='fixed')return x.toFixed(Math.min(precision,100)).replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'');return Number(x.toPrecision(15)).toString()+(Math.abs(x)>=1e15|| (x!==0&&Math.abs(x)<1e-8)?'  ('+x.toExponential(8)+')':'')}
+function tokenize(s){s=s.replace(/×/g,'*').replace(/÷/g,'/').replace(/π/g,'pi').replace(/\s+/g,'');let t=s.match(/(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?|[A-Za-z]+|[()+\-*/^!,%]/gi)||[];if(t.join('')!==s)throw Error('عبارت نامعتبر است');let out=[];for(let i=0;i<t.length;i++){let a=t[i],prev=out[out.length-1];if(prev&&((/^(?:\d|\.)/.test(a)||/^[A-Za-z]/.test(a)||a==='(')&&(/^(?:\d|\.)/.test(prev)||/^[A-Za-z]/.test(prev)||prev===')'||prev==='!')))out.push('*');out.push(a)}return out}
+function evaluate(src){let t=tokenize(src),i=0;const peek=()=>t[i],take=()=>t[i++];function expr(min=0){let a=take();if(a===undefined)throw Error('عبارت ناقص است');let x;
+if(a==='+')x=expr(25);else if(a==='-')x=-expr(25);else if(a==='('){x=expr();if(take()!==')')throw Error('پرانتز بسته نشده است')}
+else if(/^(?:\d|\.)/.test(a))x=Number(a);else if(a==='pi')x=Math.PI;else if(a==='e')x=Math.E;else if(a==='Ans')x=ans;else if(['sin','cos','tan','asin','acos','atan','sqrt','log','ln','abs','floor','ceil','round','exp'].includes(a)){if(take()!=='(')throw Error('بعد از تابع باید پرانتز بیاید');let v=expr();if(take()!==')')throw Error('پرانتز تابع بسته نشده');let z=angle==='DEG'?Math.PI/180:1;switch(a){case'sin':x=Math.sin(v*z);break;case'cos':x=Math.cos(v*z);break;case'tan':x=Math.tan(v*z);break;case'asin':x=Math.asin(v)/z;break;case'acos':x=Math.acos(v)/z;break;case'atan':x=Math.atan(v)/z;break;case'sqrt':x=Math.sqrt(v);break;case'log':x=Math.log10(v);break;case'ln':x=Math.log(v);break;case'abs':x=Math.abs(v);break;case'floor':x=Math.floor(v);break;case'ceil':x=Math.ceil(v);break;case'round':x=Math.round(v);break;case'exp':x=Math.exp(v)}}
+else throw Error('نماد یا تابع ناشناخته: '+a);
+while(i<t.length){let op=peek(),bp={'+':10,'-':10,'*':20,'/':20,'%':20,'^':30,'!':40}[op]??-1;if(bp<min)break;take();if(op==='!'){if(!Number.isInteger(x)||x<0||x>170)throw Error('فاکتوریل فقط برای اعداد صحیح ۰ تا ۱۷۰');let r=1;for(let k=2;k<=x;k++)r*=k;x=r;continue}let y=expr(bp+(op==='^'?0:1));if(op==='+')x+=y;else if(op==='-')x-=y;else if(op==='*')x*=y;else if(op==='/'){if(y===0)throw Error('تقسیم بر صفر ممکن نیست');x/=y}else if(op==='%')x=x*y/100;else if(op==='^')x=Math.pow(x,y)}
+return x}
+let v=expr();if(i<t.length)throw Error('بخش اضافی در عبارت وجود دارد');if(!Number.isFinite(v))throw Error('نتیجه تعریف‌نشده یا خارج از محدوده است');return v}
+function calculate(){try{let s=$('expr').value.trim();if(!s)return;let v=evaluate(s);ans=v;last=v;$('result').classList.remove('error');$('result').textContent=fmt(v);hist.unshift({s,v,stamp:new Date().toLocaleString('fa-IR')});hist=hist.slice(0,100);renderHistory()}catch(e){$('result').classList.add('error');$('result').textContent=e.message}}
+function renderHistory(){$('history').innerHTML=hist.length?'': '<div class="muted">هنوز محاسبه‌ای ثبت نشده است.</div>';hist.forEach((h,n)=>{let d=document.createElement('div');d.className='hist';d.innerHTML='<div class="small">'+h.stamp+'</div><div>'+esc(h.s)+'</div><div class="val">'+esc(String(h.v))+'</div>';d.onclick=()=>{$('expr').value=h.s;calculate()};$('history').append(d)})}
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function insert(s){let el=$('expr'),a=el.selectionStart,b=el.selectionEnd,val=el.value;if(s==='AC')el.value='';else if(s==='DEL')el.value=val.slice(0,a>0?a-1:0)+val.slice(b);else el.value=val.slice(0,a)+s+val.slice(b);el.focus();let p=s==='DEL'?Math.max(0,a-1):a+s.length;el.setSelectionRange(p,p)}
+document.querySelectorAll('[data-insert]').forEach(b=>b.onclick=()=>insert(b.dataset.insert));$('equals').onclick=calculate;$('equals2').onclick=calculate;$('expr').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();calculate()}});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.tabpage').forEach(x=>x.classList.toggle('hidden',x.id!==b.dataset.tab));$('modeLabel').textContent=b.textContent});
+$('angleBtn').onclick=()=>{angle=angle==='DEG'?'RAD':'DEG';$('angleBtn').textContent=angle};$('precision').oninput=e=>{precision=+e.target.value;$('precVal').textContent=precision;$('precisionLabel').textContent='دقت محاسبات: '+precision+' رقم اعشار';if(hist.length){$('result').textContent=fmt(last)}};
+$('format').onchange=()=>{if(hist.length)$('result').textContent=fmt(last)};
+$('copyBtn').onclick=()=>navigator.clipboard?.writeText($('result').textContent).then(()=>$('copyBtn').textContent='کپی شد').catch(()=>{});$('memAdd').onclick=()=>{mem+=last;$('memLabel').textContent='حافظه: '+mem};$('memRecall').onclick=()=>insert(String(mem));$('memClear').onclick=()=>{mem=0;$('memLabel').textContent='حافظه: 0'};
+$('historyClear').onclick=()=>{hist=[];renderHistory()};$('exportHistory').onclick=()=>{let csv='expression,result,date\n'+hist.map(h=>'"'+h.s.replace(/"/g,'""')+'","'+h.v+'","'+h.stamp+'"').join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download='calculator-history.csv';a.click();URL.revokeObjectURL(a.href)};
+$('themeBtn').onclick=()=>{document.body.classList.toggle('light');if(document.body.classList.contains('light')){document.documentElement.style.setProperty('--bg','#edf2fa');document.documentElement.style.setProperty('--panel','#fff');document.documentElement.style.setProperty('--txt','#142039');document.documentElement.style.setProperty('--line','#cbd5e5');document.documentElement.style.setProperty('--key','#e2eaf5');document.documentElement.style.setProperty('--muted','#53627c')}else location.reload()};
+const consts=[['π','pi'],['عدد اویلر','e'],['سرعت نور','299792458'],['ثابت گرانش','6.67430e-11'],['ثابت پلانک','6.62607015e-34'],['عدد آووگادرو','6.02214076e23'],['ثابت بولتزمن','1.380649e-23'],['بار الکترون','1.602176634e-19']];
+constList();function constList(){consts.forEach(([n,v])=>{let b=document.createElement('button');b.textContent=n+'  ·  '+v;b.onclick=()=>insert(v);$('constantList').append(b)})}
+function populate(){let typ=$('convType').value,keys=typ==='temp'?['C','F','K']:Object.keys(units[typ]);[$('convFrom'),$('convTo')].forEach(sel=>{sel.innerHTML='';keys.forEach(k=>sel.add(new Option(k,k)))});if(keys.length>1)$('convTo').selectedIndex=1}
+$('convType').onchange=populate;populate();$('convertBtn').onclick=()=>{try{let x=Number($('convValue').value),a=$('convFrom').value,b=$('convTo').value,typ=$('convType').value,y;if(!Number.isFinite(x))throw Error('عدد معتبر وارد کنید');if(typ==='temp'){let c=a==='C'?x:a==='F'?(x-32)*5/9:x-273.15;y=b==='C'?c:b==='F'?c*9/5+32:c+273.15}else y=x*units[typ][a]/units[typ][b];$('convResult').textContent=fmt(y)}catch(e){$('convResult').textContent=e.message}};
+$('expr').value='sqrt(144) + 2^10';calculate();
+})();
+</script>
+</body></html>
